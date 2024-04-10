@@ -1,0 +1,38 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Authorization/v1/SignIn",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7209"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Authorization/v1/SignIn",
+      "UpstreamHttpMethod": [ "Post" ]
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/Authorization/v1/authentication",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7209"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Authorization/v1/authentication",
+      "UpstreamHttpMethod": [ "Get" ]
+
+    }
+
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7224"
+  }
+}
