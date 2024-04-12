@@ -17,6 +17,8 @@ public partial class EcommerceAuthenticationServiceContext : DbContext
 
     public virtual DbSet<AdminUser> AdminUsers { get; set; }
 
+    public virtual DbSet<BlacklistToken> BlacklistTokens { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Shop> Shops { get; set; }
@@ -25,8 +27,10 @@ public partial class EcommerceAuthenticationServiceContext : DbContext
 
     public virtual DbSet<UserLog> UserLogs { get; set; }
 
+    public virtual DbSet<UserToken> UserTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=EcommerceAuthentication");
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:EcommerceAuthentication");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,6 +58,16 @@ public partial class EcommerceAuthenticationServiceContext : DbContext
                         j.HasKey("UserId", "RoleId");
                         j.ToTable("UsersRoles");
                     });
+        });
+
+        modelBuilder.Entity<BlacklistToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Blacklis__3214EC07F026C868");
+
+            entity.HasOne(d => d.UserToken).WithMany(p => p.BlacklistTokens)
+                .HasForeignKey(d => d.UserTokenId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BlacklistTokens_UserTokens");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -100,6 +114,14 @@ public partial class EcommerceAuthenticationServiceContext : DbContext
             entity.Property(e => e.UserAction)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<UserToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__UserToke__3214EC0743F6B2FC");
+
+            entity.Property(e => e.LoginProvider).HasMaxLength(128);
+            entity.Property(e => e.Name).HasMaxLength(128);
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -13,7 +13,6 @@
       ],
       "UpstreamPathTemplate": "/api/Authorization/v1/SignIn",
       "UpstreamHttpMethod": [ "Post" ]
-
     },
     {
       "DownstreamPathTemplate": "/api/Authorization/v1/authentication",
