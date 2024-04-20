@@ -39,5 +39,5 @@ public partial class Shop
 
     public DateTimeOffset? DeleteAt { get; set; }
 
-    public virtual User Owner { get; set; } = null!;
+    public virtual WebUser Owner { get; set; } = null!;
 }

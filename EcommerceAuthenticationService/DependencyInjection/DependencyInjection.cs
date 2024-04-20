@@ -5,29 +5,34 @@ using EcommerceAuthenticationData.Interfaces;
 using EcommerceAuthenticationData.Repositories;
 using EcommerceAuthenticationData.Services;
 using EcommerceAuthenticationService.AutoMapper;
+using EcommerceAuthenticationService.Helpers;
 using EcommerceAuthenticationService.Interfaces;
 using EcommerceAuthenticationService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StackExchange.Redis;
 
-namespace EcommerceAuthenticationService
+namespace EcommerceAuthenticationService.DependencyInjection
 {
     public static class DependencyInjection
     {
         public static IServiceCollection ServiceDescriptors(this IServiceCollection services, IConfiguration configuration)
         {
 
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(configuration["RedisOption:ConnectionString"]));
+            services.AddSingleton<IJwtUtils, JwtUtils>();
             services.AddDbContext<EcommerceAuthenticationServiceContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDalAdminUser, DalAdminUser>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IDalUserToken, DalUserToken>();
 
-          
+
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthenticationAdminService, AuthenticationAdminService>();
+           
+
             return services;
         }
 
@@ -36,10 +41,6 @@ namespace EcommerceAuthenticationService
             Seed.SeedData(serviceProvider);
             return serviceProvider;
         }
-        public static IServiceCollection ServiceAutoMapper(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddAutoMapper(typeof(AdminUserProfile).Assembly);
-            return services;
-        }
+
     }
 }

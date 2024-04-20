@@ -8,7 +8,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "7209"
+          "Port": "7038"
         }
       ],
       "UpstreamPathTemplate": "/api/Authorization/v1/SignIn",
@@ -22,7 +22,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "7209"
+          "Port": "7038"
         }
       ],
       "UpstreamPathTemplate": "/api/Authorization/v1/authentication",

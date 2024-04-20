@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EcommerceAuthenticationCore.Models;
 
-public partial class User
+public partial class WebUser
 {
     public int Id { get; set; }
 

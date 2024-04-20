@@ -1,32 +1,38 @@
-﻿using EcommerceAuthenticationApi.Authorization;
-using EcommerceAuthenticationApi.Helpers;
+﻿
+using EcommerceAuthenticationAdminApi.Helpers;
 using EcommerceAuthenticationService.AutoMapper;
 using EcommerceAuthenticationService.DependencyInjection;
 using EcommerceAuthenticationService.Helpers;
-using IdentityServer4.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using Serilog.Formatting.Compact;
+using Serilog;
 using System.Text;
+using Serilog.Events;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+//.WriteTo.File(new CompactJsonFormatter(), "logs\\log-.log", shared: true, rollingInterval: RollingInterval.Day)
 
-// Add services to the container.
-
-builder.Services.ServiceDescriptors(builder.Configuration);
+// Khởi tạo logger
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}", restrictedToMinimumLevel: LogEventLevel.Debug)
+    .WriteTo.File( "logs\\log-.log", 
+    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {SourceContext} - {Message}{NewLine}", 
+    rollingInterval: RollingInterval.Day, 
+    restrictedToMinimumLevel: LogEventLevel.Information)
+    .CreateLogger();
+builder.Host.UseSerilog();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<BlacklistAuthorizationFilter>(); // Thêm bộ lọc kiểm tra blacklist vào mọi API
 });
 builder.Services.AddAuthorization();
 builder.Services.AddCors();
-
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
-
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
@@ -59,13 +65,14 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
-   
+
     option.OperationFilter<AuthorizationOperationFilter>();
 });
 
 builder.Services.ServiceAutoMapper(builder.Configuration);
+builder.Services.ServiceDescriptors(builder.Configuration);
+var corsConfiguration = builder.Configuration.GetSection("WithOrigins").Get<List<string>>();
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -73,11 +80,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(option =>
     {
         option.DisplayRequestDuration();
-       
+
     });
 }
+
 app.UseCors(x => x
-       .AllowAnyOrigin()
+       .WithOrigins(corsConfiguration.ToArray())
        .AllowAnyMethod()
        .AllowAnyHeader());
 
@@ -86,8 +94,5 @@ app.Services.ServiceProvider();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<BlacklistAuthorizationFilter>();
-
 app.MapControllers();
-
 app.Run();

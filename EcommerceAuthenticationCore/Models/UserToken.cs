@@ -13,11 +13,15 @@ public partial class UserToken
 
     public string LoginProvider { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
+    public string AppName { get; set; } = null!;
 
-    public string Value { get; set; } = null!;
+    public string Token { get; set; } = null!;
 
     public DateTimeOffset ExpiresAt { get; set; }
 
-    public virtual ICollection<BlacklistToken> BlacklistTokens { get; set; } = new List<BlacklistToken>();
+    public DateTimeOffset CreatedAt { get; set; }
+
+    public DateTimeOffset UpdateAt { get; set; }
+
+    public DateTimeOffset? LogoutAt { get; set; }
 }

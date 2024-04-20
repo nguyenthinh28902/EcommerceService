@@ -1,0 +1,51 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/AuthorizationAdmin/v1/sign-in",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7038"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/AuthorizationAdmin/v1/sign-in",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/AuthorizationAdmin/v1/sign-out",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7038"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/AuthorizationAdmin/v1/sign-out",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/AuthorizationAdmin/v1/authentication",
+      "DownstreamSchema": "https",
+      "DownstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7038"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/AuthorizationAdmin/v1/authentication",
+      "UpstreamHttpMethod": [ "Post" ]
+
+    }
+
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7015"
+  }
+}
